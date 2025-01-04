@@ -33,9 +33,9 @@ pipeline {
             steps {
                 echo 'Pushing the Docker image to the registry...'
                 script {
-                    docker.withRegistry('https://registry.hub.docker.com', 'docker_hub_creds_id') {
+                    docker.withRegistry('https://registry.hub.docker.com', 'dockerhub_aibabll') {
                         def app = docker.image('aibabll/mybuildimage')
-                        app.push()
+                        app.push("${env.BUILD_NUMBER}")
                         app.push('latest')
                     }
                 }
