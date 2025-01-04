@@ -3,24 +3,13 @@ pipeline {
   stages {
     stage('Build') {
       steps {
-        sh './scripts/build.sh'
+        sh 'script ./scripts/build.sh'
       }
     }
 
     stage('Test') {
       steps {
-        sh './scripts/test.sh'
-      }
-    }
-
-    stage('Build Docker Image') {
-      steps {
-        script {
-          def app = docker.build("<your-dockerhub-username>/mybuildimage:${env.BUILD_NUMBER}")
-          app.push()
-          app.push("latest")
-        }
-
+        sh 'script ./scripts/test.sh'
       }
     }
 
