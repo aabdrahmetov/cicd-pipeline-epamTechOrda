@@ -1,26 +1,34 @@
 pipeline {
-  agent any
-  stages {
-    stage('build') {
-      steps {
-        sh '''chmod +x scripts/build.sh
-./scripts/build.sh'''
-      }
+    agent any
+    stages {
+        stage('Checkout') {
+            steps {
+                checkout scm
+            }
+        }
+        stage('Build') {
+            steps {
+                sh './scripts/build.sh'
+            }
+        }
+        stage('Test') {
+            steps {
+                sh './scripts/test.sh'
+            }
+        }
+        stage('Build Docker Image') {
+            steps {
+                script {
+                    def app = docker.build("<your-dockerhub-username>/mybuildimage:${env.BUILD_NUMBER}")
+                    app.push()
+                    app.push("latest")
+                }
+            }
+        }
     }
-
-    stage('test') {
-      steps {
-        sh '''chmod +x scripts/test.sh
-./scripts/test.sh
-'''
-      }
+    post {
+        always {
+            cleanWs()
+        }
     }
-
-    stage('docker image build') {
-      steps {
-        sh 'docker build -t aibabll/mybuildimage'
-      }
-    }
-
-  }
 }
